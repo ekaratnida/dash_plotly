@@ -10,7 +10,7 @@ app = Dash(__name__)
 #https://binance-docs.github.io/apidocs/spot/en/#rolling-window-price-change-statistics
 
 symbol = '["BTCUSDT","ETHUSDT"]' #&windowSize=10m'
-api = "https://api.binance.com/api/v3/ticker?type=MINI&symbols="+symbol
+api = "https://api.binance.com/api/v3/ticker?type=MINI&windowSize=1d&symbols="+symbol
 btc_coin = 'BTC/USDT'
 eth_coin = 'ETH/USDT'
 jsonData = requests.get(api).json()
@@ -22,18 +22,26 @@ print(jsonData[0]['lastPrice'])
 fig = go.Figure()
 
 fig.add_trace(go.Indicator(
+      mode = "number+delta",
       value = float(jsonData[0]['lastPrice']),
       title = btc_coin,
       number={"valueformat": '0.4f'},
-      domain = {'row': 0, 'column': 0}
+      domain = {'row': 0, 'column': 0},
+      delta = {'reference': float(jsonData[0]['highPrice']), 
+               'relative': True, 
+               'valueformat': '.4%'},
     )
 )
 
 fig.add_trace(go.Indicator(
+      mode = "number+delta",
       value = float(jsonData[1]['lastPrice']),
       title = eth_coin,
       number={"valueformat": '0.4f'},
-      domain = {'row': 0, 'column': 1}
+      domain = {'row': 0, 'column': 1},
+      delta = {'reference': float(jsonData[1]['highPrice']), 
+               'relative': True, 
+               'valueformat': '.4%'}
     )
 )
 
@@ -71,18 +79,24 @@ def update_data(n_intervals):
 
     
     fig.add_trace(go.Indicator(
+        mode = "number+delta",
         value = float(jsonData[0]['lastPrice']),
         title = btc_coin,
         number={"valueformat": '0.4f'},
-        domain = {'row': 0, 'column': 0}
+        domain = {'row': 0, 'column': 0},
+        delta = {'reference': float(jsonData[0]['highPrice']), 
+                 'relative': True, 'valueformat': '.4%'}
         )
     )
 
     fig.add_trace(go.Indicator(
+        mode = "number+delta",
         value = float(jsonData[1]['lastPrice']),
         title = eth_coin,
         number={"valueformat": '0.4f'},
-        domain = {'row': 0, 'column': 1}
+        domain = {'row': 0, 'column': 1},
+        delta = {'reference': float(jsonData[1]['highPrice']), 
+                 'relative': True, 'valueformat': '.4%'}
         )
     )
 
